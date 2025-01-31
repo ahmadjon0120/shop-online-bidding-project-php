@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction Management</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <div id="header"></div>
+
+                
+    <div class="card text-center">
+        <div class="card-body">
+            <h2>Maintenance</h2>
+            <h5>Process Auction Items and Generate Report</h5>
+          <button class="btn btn-primary" onclick="processAuctionItems()">Process Auction Items</button>
+          <button class="btn btn-success" onclick="generateReport()">Generate Report</button>
+        </div>
+      </div>
+
+      
+      <div id="report"></div>
+    
+    
+</body>
+</html>
+
+
+<script>
+function processAuctionItems() {
+    // Create an XMLHttpRequest object
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "process_auction_items.php", true);
+
+    // Define the function to handle the response
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = xhr.responseText;
+            // Display the response on the web page
+            alert(response);
+        }
+    };
+
+    // Send the request
+    xhr.send();
+}
+
+
+
+
+function generateReport() {
+    // Create an XMLHttpRequest object
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "generate_report.php", true);
+
+    // Define the function to handle the response
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = xhr.responseText;
+            // Display the response on the web page
+            document.querySelector("#report").innerHTML = response;
+        }
+    };
+
+    // Send the request
+    xhr.send();
+}
+
+
+
+
+
+
+</script>
+
+
+
+
+<script>
+  function deleteItem(itemNumber) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'delete_item.php?itemNumber=' + itemNumber, true);
+
+      xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                  var response = xhr.responseText;
+                  alert(response); // Display the response message
+                  // You may also want to refresh the report after deleting the item
+                  generateReport()
+              } else {
+                  alert('An error occurred while deleting the item.');
+              }
+          }
+      };
+
+      xhr.send();
+  }
+</script>
+
+
+<script>
+   function checkLoginStatus() {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "check_login_status.php", true);
+  
+      xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+              var response = xhr.responseText;
+              if (response === "logged_in") {
+                  // The user is logged in, you can perform actions accordingly.
+                  // alert("User is logged in");
+              } else {
+                  // The user is not logged in, you can redirect to the login page or take other actions.
+                  // alert("You are not logged in");
+                  window.location.href = "login.htm";
+              }
+          }
+      };
+  
+      xhr.send();
+  }
+  
+  // Call the function to check login status when the page loads
+  checkLoginStatus();
+    </script>
+
+
+<script> 
+    //including header
+        $(function(){
+          $("#header").load("header.htm"); 
+        });
+    </script> 

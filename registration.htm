@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Registration</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <br>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-white" style="background-color: #8b0000;">Customer Registration</div>
+                    <div class="card-body">
+                        <form id="registration-form" method="POST">
+                            <div class="form-group">
+                                <label for="first_name">First Name:</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="surname">Surname:</label>
+                                <input type="text" class="form-control" id="surname" name="surname" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address:</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="retype_password">Retype Password:</label>
+                                <input type="password" class="form-control" id="retype_password" name="retype_password" required>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="submit-button">Register</button>
+                            <p class="mt-1 mb-0">Already have an account? <a href="login.htm">Login here</a></p>
+                            
+                        </form>
+                    </div>
+                    <div class="card-footer" id="message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#submit-button").click(function () {
+                // Your AJAX code to submit the form data to the PHP script
+                var first_name = $("#first_name").val();
+                var surname = $("#surname").val();
+                var email = $("#email").val();
+                var password = $("#password").val();
+                var retype_password = $("#retype_password").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "register.php",
+                    data: {
+                        first_name: first_name,
+                        surname: surname,
+                        email: email,
+                        password: password,
+                        retype_password: retype_password
+                    },
+                    success: function (response) {
+                        $("#message").html(response);
+                    }
+                });
+            });
+
+
+             // Add an event listener to hide the message when input changes
+             $("#first_name, #surname, #email, #password, #retype_password").on("input", function () {
+                $("#message").empty();
+            });
+        });
+    </script>
+</body>
+</html>
