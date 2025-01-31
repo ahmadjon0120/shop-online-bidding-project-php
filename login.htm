@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <br>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-white" style="background-color: #8b0000;">Customer Login</div>
+                    <div class="card-body">
+                        <form id="login-form" method="POST">
+                            <div class="form-group">
+                                <label for="email">Email Address:</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password:</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="login-button">Login</button>
+                            <br><br><p>Don't have an account? <a href="registration.htm">Register here</a></p>
+                        </form>
+                    </div>
+                    <!-- <div class="card-footer" id="message">
+                        
+                    </div> -->
+                    <div class="card-footer" id="message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#login-button").click(function () {
+                var email = $("#email").val();
+                var password = $("#password").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "login.php",
+                    data: {
+                        email: email,
+                        password: password
+                    },
+                    success: function (response) {
+                        if (response === "Login successful!") {
+                            // Redirect to bidding.htm
+                            window.location.href = "bidding.htm";
+                        } else {
+                            $("#message").html(response);
+                        }
+                    }
+                });
+            });
+
+
+             // Add an event listener to hide the error message when input changes
+             $("#email, #password").on("input", function () {
+                $("#message").empty();
+            });
+
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    
+
+    <nav class="navbar navbar-expand-lg navbar-dark py-3"  style="background-color: #8b0000;">
+        <!-- #0e423a -->
+    
+        
+                    <a class="navbar-brand" href="">
+                    Shop Online
+                    </a>
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                
+                  <div class="collapse navbar-collapse text-white" id="navbarsExample05">
+                    <ul class="navbar-nav ml-auto">
+        
+                      <li class="nav-item">
+                        <a class="nav-link active" href="home.htm">Home</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active" href="listing.htm">Listing</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active" href="bidding.htm">Bidding</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active" href="maintenance.htm">Maintenance</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active" href="logout.php">Logout</a>
+                      </li>
+                   
+                    
+                    </ul>
+                    
+                  </div>
+                </nav>
+        
+  
+</body>
+</html>
+
+
+<script>
+  function checkLoginStatus() {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "check_login_status.php", true);
+  
+      xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+              var response = xhr.responseText;
+              if (response === "logged_in") {
+                  // The user is logged in, you can perform actions accordingly.
+                  // alert("User is logged in");
+              } else {
+                  // The user is not logged in, you can redirect to the login page or take other actions.
+                  // alert("You are not logged in");
+                  window.location.href = "login.htm";
+              }
+          }
+      };
+  
+      xhr.send();
+  }
+  
+  // Call the function to check login status when the page loads
+  checkLoginStatus();
+  </script>
+  

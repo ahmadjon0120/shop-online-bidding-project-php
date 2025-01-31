@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopOnline Bidding Page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <div id="header"></div>
+
+
+    
+        <div class="alert alert-warning mb-1 text-center my-0 pb-0" role="alert">
+            <h2><a href="" class="alert-link text-decoration-none">Bidding</a></h2>
+            <p>Current auction item are listed below. to place a bid for an item, use the Place Bid button</p>
+        </div>
+    
+
+    <!-- Container to display item cards -->
+    <div class="container mt-5" id="itemContainer">
+        <!-- Item cards will be dynamically added here -->
+    </div>
+
+
+ <!-- Modal for Place Bid -->
+ <div class="modal fade" id="placeBidModal" tabindex="-1" role="dialog" aria-labelledby="placeBidModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="placeBidModalLabel">Place a Bid</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="newBidPrice">New Bid Price:</label>
+                        <input type="number" class="form-control" id="newBidPrice" placeholder="Enter bid price">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitBidRequest">Submit Bid Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        // Function to fetch and display items
+        function fetchItems() {
+            var itemContainer = document.getElementById("itemContainer");
+
+            // Create a new XMLHttpRequest object
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "../../data/auction.xml", true);
+
+            // Set up a callback function for when the request is complete
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var xmlData = xhr.responseXML;
+                    var items = xmlData.getElementsByTagName("item");
+
+                    // Clear the existing item cards
+                    itemContainer.innerHTML = "";
+
+                    // Iterate through each item and display them in Bootstrap cards
+                    for (var i = 0; i < items.length; i++) {
+                        var item = items[i];
+
+                        var itemNumber = item.getElementsByTagName("item_number")[0].textContent;
+                        var name = item.getElementsByTagName("name")[0].textContent;
+                        var category = item.getElementsByTagName("category")[0].textContent;
+                        var description = item.getElementsByTagName("description")[0].textContent;
+                        var buyItNowPrice = item.getElementsByTagName("buyItNowPrice")[0].textContent;
+                        var currentBidPrice = item.getElementsByTagName("currentBidPrice")[0].textContent;
+                        var duration = item.getElementsByTagName("duration")[0].textContent;
+                        
+
+                        var status = item.getElementsByTagName("status")[0].textContent;
+
+                        // Calculate time left (you may need to parse and format this better)
+                        var timeLeft = duration + " seconds";
+
+                        var itemCard = document.createElement("div");
+                        itemCard.className = "card mb-4";
+
+
+//here we are calculating difference of (start date time minus curent date time) in second and name it "timeDifferenceInSeconds"
+// Starting date and time in the format 'YYYY-MM-DD' and 'HH:MM:SS't 
+// var startingDate = '2023-10-14';
+// var startingTime = '18:11:55';
+var startingDate = item.getElementsByTagName("startDate")[0].textContent;
+var startingTime = item.getElementsByTagName("startTime")[0].textContent;
+
+
+// Split the starting time into hours, minutes, and seconds
+var [startHour, startMinute, startSecond] = startingTime.split(':').map(Number);
+
+// Create a JavaScript Date object with the starting date and time
+var startDate = new Date(startingDate);
+startDate.setHours(startHour, startMinute, startSecond);
+
+// Get the current date and time
+var currentDate = new Date();
+
+// Calculate the difference in seconds
+var timeDifferenceInSeconds = Math.floor(Math.abs((startDate - currentDate) / 1000));
+// var timeDifferenceInMinutes = timeDifferenceInSeconds/60;
+
+
+
+
+
+
+
+                        var durationTimeLeftInSeconds = parseInt(duration);
+
+//here we are calculating difference between (the result of above calculated "timeDifferenceInSeconds") and (stored duration of xml)
+                        timeLeftInSeconds = durationTimeLeftInSeconds - timeDifferenceInSeconds;
+
+                        totaltimeLeftInSeconds = durationTimeLeftInSeconds - timeDifferenceInSeconds;//using it to show and hide buttons
+
+                        // Calculate the time left in days, hours, minutes, and seconds
+                        var daysLeft = Math.floor(timeLeftInSeconds / (3600 * 24));
+                        timeLeftInSeconds -= daysLeft * 3600 * 24;
+                        var hoursLeft = Math.floor(timeLeftInSeconds / 3600);
+                        timeLeftInSeconds -= hoursLeft * 3600;
+                        var minutesLeft = Math.floor(timeLeftInSeconds / 60);
+                        var secondsLeft = timeLeftInSeconds % 60;
+
+                        var cardContent = `
+                            <div class="card-body">
+                                 <!-- <p class="card-text">starting time minus current time: ${timeDifferenceInSeconds}</p>-->
+                                 <!-- <p class="card-text">total time left in second: ${totaltimeLeftInSeconds}</p>-->
+                                <p class="card-text">Item Number: ${itemNumber}</p>
+                                <p class="card-text">Item Name: ${name}</p>
+                                <p class="card-text">Category: ${category}</p>
+                                <p class="card-text">Description: ${description.substring(0, 30)}</p>
+                                <p class="card-text">Buy It Now Price: $${buyItNowPrice}</p>
+                                <p class="card-text">Current Bid Price: $${currentBidPrice}</p>
+                                <p class="card-text">Time Left: ${daysLeft}d ${hoursLeft}h ${minutesLeft}m ${secondsLeft}s</p>
+                        `;
+
+                        if (status === "sold") {
+                            cardContent += `<p class="text-danger">Item has been sold</p>`;
+                        } else if (totaltimeLeftInSeconds <= 0) {
+                            cardContent += `<p class="text-danger">Time expired</p>`;
+                        } else {
+                            // Display Place Bid and Buy It Now buttons
+                            cardContent += `
+                                <button class="btn btn-primary" onclick="openBidModal('${itemNumber}')">Place Bid</button>
+                                <button class="btn btn-success" onclick="buyItNow('${itemNumber}')">Buy It Now</button>
+                            `;
+                        }
+
+cardContent += `</div>`;
+itemCard.innerHTML = cardContent;
+
+
+                        itemContainer.appendChild(itemCard);
+                    }
+                }
+            };
+
+            // Send the XMLHttpRequest request
+            xhr.send();
+        }
+
+
+
+
+         // Function to open the bid modal
+         function openBidModal(itemNumber) {
+
+             // Set the itemNumber as a data attribute on the Submit Bid Request button
+            document.getElementById('submitBidRequest').setAttribute('data-itemNumber', itemNumber);
+
+            $('#placeBidModal').modal('show');
+            $('#submitBidRequest').data('itemNumber', itemNumber);
+        }
+
+
+
+
+
+// Function to submit the bid request
+document.getElementById('submitBidRequest').addEventListener('click', function () {
+    var itemNumber = this.getAttribute('data-itemNumber');
+    // var itemNumber = "652aca281445f";
+    var newBidPrice = document.getElementById('newBidPrice').value;
+
+    if (!newBidPrice) {
+        alert("Please enter a bid price.");
+        return;
+    }
+
+    // var customerID = session["customerID"];
+
+    // Prepare the data to send to the server
+    var bidRequestData = {
+        itemNumber: itemNumber,
+        newBidPrice: newBidPrice
+        // customerID: customerID
+    };
+
+    // Create a new XMLHttpRequest object
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "process_bid.php", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                var response = xhr.responseText;
+                if (response.includes("Thank you! Your bid is recorded in ShopOnline.")) {
+                    alert("Thank you! Your bid is recorded in ShopOnline.");
+                    fetchItems(); // Refresh the item list
+                } else if (response.includes("Sorry, your bid is not valid.")) {
+                    alert("Sorry, your bid is not valid.");
+                } else {
+                    alert("An error occurred while processing your bid.");
+                }
+            } else {
+                alert("An error occurred while processing your bid.");
+            }
+        }
+    };
+
+    // Send the bid request data as JSON
+    xhr.send(JSON.stringify(bidRequestData));
+});
+
+
+
+
+
+
+
+// Function to process the Buy It Now request
+function buyItNow(itemNumber) {
+    // var customerID = session["customerID"];
+
+    // Prepare the data to send to the server
+    var buyItNowData = {
+        itemNumber: itemNumber
+        // customerID: customerID
+    };
+
+    // Create a new XMLHttpRequest object
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "process_buy_it_now.php", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                var response = xhr.responseText;
+                if (response.includes("Thank you for purchasing this item.")) {
+                    alert("Thank you for purchasing this item.");
+                    fetchItems(); // Refresh the item list
+                } else {
+                    alert("An error occurred while processing your purchase.");
+                }
+            } else {
+                alert("An error occurred while processing your purchase.");
+            }
+        }
+    };
+
+    // Send the Buy It Now request data as JSON
+    xhr.send(JSON.stringify(buyItNowData));
+}
+
+
+
+
+
+
+        // Initial fetch when the page loads
+        fetchItems();
+
+        // Periodically refresh the item list every 5 seconds
+        setInterval(fetchItems, 5000);
+
+        // Rest of your JavaScript code
+
+
+
+
+
+
+
+
+        
+    </script>
+</body>
+</html>
+
+
+<script> 
+    //including header
+        $(function(){
+          $("#header").load("header.htm"); 
+        });
+    </script> 

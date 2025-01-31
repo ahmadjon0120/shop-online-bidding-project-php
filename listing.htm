@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Item for Sale</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div id="header"></div>
+    <form class="border" id="itemForm">
+        <table class="table table-borderless">
+            <tr>
+                <div class="alert alert-warning mb-1 text-center my-0 pb-0" role="alert">
+                    <h2><a href="" class="alert-link text-decoration-none">Listing</a></h2>
+                    <p>Add an item for sale in ShopOnline</p>
+                </div>
+            </tr>
+            <tr>
+                <td><label class="form-label">Item Name</label><input type="text" id="item_name" class="form-control" name="item_name" placeholder="Enter item name..." required></td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label class="form-label">Category</label>
+                    <select name="category" id="category" class="form-control" required>
+                        <option disabled selected value="">Select a category</option>
+                    </select>
+                    <input type="text" id="new_category" class="form-control mt-2" name="new_category" placeholder="Enter a new category" style="display: none;">
+                </td>
+            </tr>
+            
+            <tr>
+                <td><label class="form-label">Description</label><textarea id="description" class="form-control" name="description" placeholder="Enter item description..." required></textarea></td>
+            </tr>
+            <tr>
+                <td><label class="form-label">Start Price (default 0)</label><input type="number" id="start_price" class="form-control" name="start_price" value="0" required></td>
+            </tr>
+            <tr>
+                <td><label class="form-label">Reserve Price</label><input type="number" id="reserve_price" class="form-control" name="reserve_price" required></td>
+            </tr>
+            <tr>
+                <td><label class="form-label">Buy-It-Now Price</label><input type="number" id="buy_it_now_price" class="form-control" name="buy_it_now_price" required></td>
+            </tr>
+           
+            <tr>
+                <td>
+                    <label class="form-label">Duration</label>
+                    <div class="form-group">
+                        <input type="number" id="duration_days" class="form-control" name="duration_days" placeholder="Days" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="duration_hours" class="form-control" name="duration_hours" placeholder="Hours" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" id="duration_minutes" class="form-control" name="duration_minutes" placeholder="Minutes" required>
+                    </div>
+                </td>
+            </tr>
+            
+            <tr>
+                <td><label class="form-label"><div id="result"></div></label></td>
+            </tr>
+            
+            <tr class="text-center">
+                <td>
+                    <button type="button" class="btn btn-warning" id="listItemButton">List Item</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+  
+</body>
+</html>
+
+<script>
+
+
+
+// Function to load categories from auction.xml using XMLHttpRequest
+function loadCategories() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/home/students/accounts/s104096281/cos80021/www/data/customers.xml", true);
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var xmlDoc = xhr.responseXML;
+            var select = document.getElementById("category");
+
+            // Clear existing options
+            select.innerHTML = '<option disabled selected value="">Select a category</option>';
+
+            // Create an array to track unique categories
+            var uniqueCategories = [];
+
+            // Add existing categories from auction.xml
+            var categories = xmlDoc.getElementsByTagName("category");
+            for (var i = 0; i < categories.length; i++) {
+                var categoryName = categories[i].textContent;
+                if (!uniqueCategories.includes(categoryName)) {
+                    uniqueCategories.push(categoryName);
+                    var option = document.createElement("option");
+                    option.value = categoryName;
+                    option.textContent = categoryName;
+                    select.appendChild(option);
+                }
+            }
+
+            // Add the "Other" option
+            var otherOption = document.createElement("option");
+            otherOption.value = "Other";
+            otherOption.textContent = "Other";
+            select.appendChild(otherOption);
+        }
+    };
+
+    xhr.send();
+}
+
+// Load categories when the page loads
+loadCategories();
+
+// Add event handling for the "category" drop-down
+document.getElementById("category").addEventListener("change", function () {
+    var selectedCategory = this.value;
+    if (selectedCategory === "Other") {
+        document.getElementById("new_category").style.display = "block";
+    } else {
+        document.getElementById("new_category").style.display = "none";
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById("listItemButton").addEventListener("click", function() {
+        
+        // validation to check blank in new category if other is selcted in category
+        var selectedCategory = document.getElementById("category").value;
+        var newCategoryInput = document.getElementById("new_category");
+
+        if (selectedCategory === "Other") {
+            var newCategoryValue = newCategoryInput.value.trim(); // Trim whitespace
+
+            if (newCategoryValue === "") {
+                alert("New category cannot be blank.");
+                newCategoryInput.focus(); // Focus on the input field
+                return; // Prevent further processing
+            }
+        }
+
+        
+        
+        
+        // Get the form data
+        var itemForm = document.getElementById("itemForm");
+        var formData = new FormData(itemForm);
+
+        // Validate that all required fields are not blank
+        var fieldsToValidate = ["item_name", "category", "description", "reserve_price", "buy_it_now_price", "start_price", "duration_days", "duration_hours", "duration_minutes"];
+
+        for (var i = 0; i < fieldsToValidate.length; i++) {
+            var fieldName = fieldsToValidate[i];
+            var fieldValue = formData.get(fieldName);
+
+            if (!fieldValue) {
+                alert("Please fill in all required fields.");
+                return;
+            }
+        }
+
+        // Validate and extract the hour and minute values
+        var durationDays = parseInt(formData.get("duration_days")) || 0;
+        var durationHours = parseInt(formData.get("duration_hours")) || 0;
+        var durationMinutes = parseInt(formData.get("duration_minutes")) || 0;
+
+        // Validate hour input
+        if (durationHours < 1 || durationHours > 23) {
+            alert("Please enter a valid hour value between 1 and 23.");
+            return;
+        }
+
+        // Validate minute input
+        if (durationMinutes < 1 || durationMinutes > 59) {
+            alert("Please enter a valid minute value between 1 and 59.");
+            return;
+        }
+
+        // Calculate the total duration in minutes
+        var totalDurationMinutes = durationDays * 24 * 60 + durationHours * 60 + durationMinutes;
+        var totalDurationSeconds = totalDurationMinutes * 60;
+
+        // Add the total duration to the form data
+        formData.set("duration", totalDurationSeconds);
+
+
+        // Create an XMLHttpRequest object
+        var xhr = new XMLHttpRequest();
+
+        // Set up the request
+        xhr.open("POST", "listing.php", true);
+
+        // Define the callback function to handle the response
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var response = xhr.responseText;
+                // Display the response in the result div
+                document.getElementById("result").innerHTML = response;
+            }
+        };
+
+        // Send the request with form data
+        xhr.send(formData);
+    });
+</script>
+
+
+
+<script> 
+//including header
+    $(function(){
+      $("#header").load("header.htm"); 
+    });
+</script> 
