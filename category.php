@@ -1,6 +1,12 @@
 <?php
-// Load the XML file
-$xml = simplexml_load_file('/home/students/accounts/s104096281/cos80021/www/data/auction.xml');
+// Load the XML file using a relative path
+$xml = simplexml_load_file('auction.xml');
+
+if ($xml === false) {
+    // Handle the error if the XML file cannot be loaded
+    echo json_encode(array('error' => 'Failed to load XML file'));
+    exit;
+}
 
 $categories = array();
 

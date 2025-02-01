@@ -20,24 +20,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Passwords do not match.";
     }
 
-    // Check if the email address is unique (you would typically check your database)
-
     // If there are no errors, proceed with registration
     if (empty($errors)) {
         // Generate a customer ID (you can use a suitable algorithm)
         $customerID = uniqid();
 
-        // Check if the XML file exists
-        if (!file_exists("/home/students/accounts/s104096281/cos80021/www/data/customers.xml")) {
+        // Check if the XML file exists using a relative path
+        $xmlFile = 'customers.xml';
+        if (!file_exists($xmlFile)) {
             // If the file doesn't exist, create it with the initial structure
             $xml = new SimpleXMLElement("<customers></customers>");
         } else {
             // If the file exists, load it
-            $xml = simplexml_load_file("/home/students/accounts/s104096281/cos80021/www/data/customers.xml");
+            $xml = simplexml_load_file($xmlFile);
         }
 
-         // Check if the email is already used
-         foreach ($xml->customer as $customer) {
+        // Check if the email is already used
+        foreach ($xml->customer as $customer) {
             if ($customer->email == $email) {
                 echo "Email address already in use. Please choose another.";
                 exit; // Exit the script
@@ -50,11 +49,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $customer->addChild("first_name", $first_name);
         $customer->addChild("surname", $surname);
         $customer->addChild("email", $email);
-        $customer->addChild("password", $password); 
+        $customer->addChild("password", $password);
 
         // Save the XML file
-        $xml->asXML("/home/students/accounts/s104096281/cos80021/www/data/customers.xml");
-
+        $xml->asXML($xmlFile);
 
         // Send a welcome email
         $to = $email;

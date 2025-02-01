@@ -1,8 +1,15 @@
 <?php
 session_start();
-// Load the XML file
-$xmlFile = '/home/students/accounts/s104096281/cos80021/www/data/auction.xml';
+
+// Load the XML file using a relative path
+$xmlFile = 'auction.xml';
 $xml = simplexml_load_file($xmlFile);
+
+if ($xml === false) {
+    // Handle the error if the XML file cannot be loaded
+    echo 'Failed to load XML file.';
+    exit;
+}
 
 // Get the POST data
 $data = json_decode(file_get_contents('php://input'), true);
@@ -10,11 +17,6 @@ $data = json_decode(file_get_contents('php://input'), true);
 $itemNumber = $data['itemNumber'];
 $newBidPrice = floatval($data['newBidPrice']);
 $customerID = $_SESSION['customerID'];
-
-// $itemNumber = "652aca281445f";
-// $newBidPrice = floatval(16);
-// $customerID = $_SESSION['customerID'];
-
 
 // Find the item in the XML
 $item = $xml->xpath("/auction/item[item_number='{$itemNumber}']");
@@ -32,7 +34,6 @@ if (count($item) === 1) {
         // Save the updated XML
         $xml->asXML($xmlFile);
 
-
         // Send an acknowledgment to the client
         echo 'Thank you! Your bid is recorded in ShopOnline.';
     } else {
@@ -43,9 +44,4 @@ if (count($item) === 1) {
     // Item not found, send an error response
     echo 'Error: Item not found.';
 }
-
-
-// Before the response is sent
-
-
 ?>

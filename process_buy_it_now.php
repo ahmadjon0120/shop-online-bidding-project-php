@@ -1,9 +1,15 @@
 <?php
 session_start();
 
-// Load the XML file
-$xmlFile = '/home/students/accounts/s104096281/cos80021/www/data/auction.xml';
+// Load the XML file using a relative path
+$xmlFile = 'auction.xml';
 $xml = simplexml_load_file($xmlFile);
+
+if ($xml === false) {
+    // Handle the error if the XML file cannot be loaded
+    echo 'Failed to load XML file.';
+    exit;
+}
 
 // Get the POST data
 $data = json_decode(file_get_contents('php://input'), true);

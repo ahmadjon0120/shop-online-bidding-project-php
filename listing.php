@@ -5,7 +5,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $item_name = $_POST["item_name"];
     $category = $_POST["category"];
 
-
     if ($category === "Other") {
         // If "Other" is selected, use the new category input
         $newCategory = $_POST["new_category"];
@@ -18,9 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Add code to use the $category value
     }
 
-
-
-
     $description = $_POST["description"];
     $reserve_price = $_POST["reserve_price"];
     $buy_it_now_price = $_POST["buy_it_now_price"];
@@ -28,9 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $duration = $_POST["duration"];
 
     // Perform input validation, e.g., ensure start price is less than or equal to reserve price
-
-     // Perform input validation
-     if ($start_price > $reserve_price) {
+    if ($start_price > $reserve_price) {
         // Start price should not be more than the reserve price
         echo "Start price cannot be greater than the reserve price.";
         exit; // Exit the script
@@ -48,9 +42,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $startTime = date("H:i:s");
 
     // Create or load auction.xml and add the item information
+    $xmlFile = 'auction.xml';
     $xml = new DOMDocument();
-    if (file_exists('/home/students/accounts/s104096281/cos80021/www/data/auction.xml')) {
-        $xml->load('/home/students/accounts/s104096281/cos80021/www/data/auction.xml');
+    if (file_exists($xmlFile)) {
+        $xml->load($xmlFile);
     } else {
         $auction = $xml->createElement('auction');
         $xml->appendChild($auction);
@@ -72,14 +67,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $item->appendChild($xml->createElement('buyItNowPrice', $buy_it_now_price));
     $item->appendChild($xml->createElement('startPrice', $start_price));
     $item->appendChild($xml->createElement('currentBidPrice', $start_price)); // Set current bid price (with the start price as initial value).
-
     $item->appendChild($xml->createElement('duration', $duration));
 
     $xml->documentElement->appendChild($item);
 
     // Save the XML document
     $xml->formatOutput = true;
-    $xml->save('/home/students/accounts/s104096281/cos80021/www/data/auction.xml');
+    $xml->save($xmlFile);
 
     // Return the generated item number and start date/time to the client
     echo "Thank you! Your item has been listed in ShopOnline. The item number is $item_number, and the bidding starts now: $startTime on $startDate";

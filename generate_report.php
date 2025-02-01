@@ -2,10 +2,10 @@
 function convertSecondsToDHMS($seconds) {
     $days = floor($seconds / (60 * 60 * 24));
     $seconds %= (60 * 60 * 24);
-    
+
     $hours = floor($seconds / (60 * 60));
     $seconds %= (60 * 60);
-    
+
     $minutes = floor($seconds / 60);
     $seconds %= 60;
 
@@ -19,9 +19,15 @@ function convertSecondsToDHMS($seconds) {
     return trim($result);
 }
 
-// Load the XML file
-$xmlFile = '/home/students/accounts/s104096281/cos80021/www/data/auction.xml';
+// Load the XML file using a relative path
+$xmlFile = 'auction.xml';
 $xml = simplexml_load_file($xmlFile);
+
+if ($xml === false) {
+    // Handle the error if the XML file cannot be loaded
+    echo 'Failed to load XML file.';
+    exit;
+}
 
 $soldItems = $xml->xpath("//item[status='sold']");
 $failedItems = $xml->xpath("//item[status='failed']");
@@ -45,7 +51,6 @@ foreach ($soldItems as $item) {
     echo '<td>' . $item->customerID . '</td>';
     echo '<td>' . $item->name . '</td>';
     echo '<td>' . $item->category . '</td>';
-   
     echo '<td>' . $item->reservePrice . '</td>';
     echo '<td>' . $item->buyItNowPrice . '</td>';
     echo '<td>' . $item->startPrice . '</td>';
@@ -54,7 +59,7 @@ foreach ($soldItems as $item) {
     echo '<td>$' . number_format(floatval($item->currentBidPrice) * 0.03, 2) . '</td>';
     echo '</tr>';
 
-       // Check if the status is not "in_progress"
+    // Check if the status is not "in_progress"
     if ($item->status != 'in_progress') {
         $itemsToDelete[] = (string)$item->item_number;
     }
@@ -84,16 +89,12 @@ foreach ($failedItems as $item) {
     }
 }
 
-
 echo '<tr class="alert alert-success"><td colspan=15>Total number of sold items: ' . count($soldItems) . '</td></tr>';
 echo '<tr class="alert alert-warning"><td colspan=15>Total number of failed items: ' . count($failedItems) . '</td></tr>';
-echo '<tr class="alert alert-danger"><td colspan=15>Total revenue: $' . number_format($revenue, 2).'</td></tr>';
-
+echo '<tr class="alert alert-danger"><td colspan=15>Total revenue: $' . number_format($revenue, 2) . '</td></tr>';
 
 echo '</tbody>';
 echo '</table>';
-
-
 
 // Delete items from the XML file
 $dom = new DOMDocument();
@@ -111,11 +112,8 @@ foreach ($itemsToDelete as $itemNumber) {
     }
 }
 
-
 $dom->save($xmlFile);
 
 // Output a message to indicate the items have been deleted
-// echo 'Items with status other than "in_progress" have been deleted from the XML file.';
+echo 'Items with status other than "in_progress" have been deleted from the XML file.';
 ?>
-
-
