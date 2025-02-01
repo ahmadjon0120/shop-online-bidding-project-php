@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Generate item number, startDate, and startTime
     $item_number = uniqid();  // You can use a more sophisticated method to generate unique item numbers
-    date_default_timezone_set("Asia/Karachi");
+    date_default_timezone_set("Australia/Melbourne");
     $startDate = date("Y-m-d");
     $startTime = date("H:i:s");
 

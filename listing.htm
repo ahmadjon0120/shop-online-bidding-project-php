@@ -79,50 +79,46 @@
 <script>
 
 
+ // Function to load categories from category.php using XMLHttpRequest
+ function loadCategories() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "category.php", true);
 
-// Function to load categories from auction.xml using XMLHttpRequest
-function loadCategories() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/home/students/accounts/s104096281/cos80021/www/data/customers.xml", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var categories = JSON.parse(xhr.responseText);
+                    var select = document.getElementById("category");
 
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var xmlDoc = xhr.responseXML;
-            var select = document.getElementById("category");
+                    // Clear existing options
+                    select.innerHTML = '<option disabled selected value="">Select a category</option>';
 
-            // Clear existing options
-            select.innerHTML = '<option disabled selected value="">Select a category</option>';
+                    // Add categories to the dropdown
+                    for (var i = 0; i < categories.length; i++) {
+                        var categoryName = categories[i];
+                        var option = document.createElement("option");
+                        option.value = categoryName;
+                        option.textContent = categoryName;
+                        select.appendChild(option);
+                    }
 
-            // Create an array to track unique categories
-            var uniqueCategories = [];
-
-            // Add existing categories from auction.xml
-            var categories = xmlDoc.getElementsByTagName("category");
-            for (var i = 0; i < categories.length; i++) {
-                var categoryName = categories[i].textContent;
-                if (!uniqueCategories.includes(categoryName)) {
-                    uniqueCategories.push(categoryName);
-                    var option = document.createElement("option");
-                    option.value = categoryName;
-                    option.textContent = categoryName;
-                    select.appendChild(option);
+                    // Add the "Other" option
+                    var otherOption = document.createElement("option");
+                    otherOption.value = "Other";
+                    otherOption.textContent = "Other";
+                    select.appendChild(otherOption);
                 }
-            }
+            };
 
-            // Add the "Other" option
-            var otherOption = document.createElement("option");
-            otherOption.value = "Other";
-            otherOption.textContent = "Other";
-            select.appendChild(otherOption);
+            xhr.send();
         }
-    };
 
-    xhr.send();
-}
+        // Load categories when the page loads
+        loadCategories();
 
-// Load categories when the page loads
-loadCategories();
 
+
+
+        
 // Add event handling for the "category" drop-down
 document.getElementById("category").addEventListener("change", function () {
     var selectedCategory = this.value;
@@ -132,14 +128,6 @@ document.getElementById("category").addEventListener("change", function () {
         document.getElementById("new_category").style.display = "none";
     }
 });
-
-
-
-
-
-
-
-
 
 
 
@@ -188,7 +176,7 @@ document.getElementById("category").addEventListener("change", function () {
         var durationMinutes = parseInt(formData.get("duration_minutes")) || 0;
 
         // Validate hour input
-        if (durationHours < 1 || durationHours > 23) {
+        if (durationHours < 0 || durationHours > 23) {
             alert("Please enter a valid hour value between 1 and 23.");
             return;
         }

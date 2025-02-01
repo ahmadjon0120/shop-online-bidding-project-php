@@ -70,17 +70,17 @@
     <script>
         // Function to fetch and display items
         function fetchItems() {
-            var itemContainer = document.getElementById("itemContainer");
+        var itemContainer = document.getElementById("itemContainer");
 
-            // Create a new XMLHttpRequest object
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "../../data/auction.xml", true);
+        // Create a new XMLHttpRequest object
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "fetchItem.php", true);
 
-            // Set up a callback function for when the request is complete
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var xmlData = xhr.responseXML;
-                    var items = xmlData.getElementsByTagName("item");
+        // Set up a callback function for when the request is complete
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var xmlData = xhr.responseXML;
+                var items = xmlData.getElementsByTagName("item");
 
                     // Clear the existing item cards
                     itemContainer.innerHTML = "";
@@ -159,7 +159,7 @@ var timeDifferenceInSeconds = Math.floor(Math.abs((startDate - currentDate) / 10
                                 <p class="card-text">Category: ${category}</p>
                                 <p class="card-text">Description: ${description.substring(0, 30)}</p>
                                 <p class="card-text">Buy It Now Price: $${buyItNowPrice}</p>
-                                <p class="card-text">Current Bid Price: $${currentBidPrice}</p>
+                                <p class="card-text">Bid Price: $${currentBidPrice}</p>
                                 <p class="card-text">Time Left: ${daysLeft}d ${hoursLeft}h ${minutesLeft}m ${secondsLeft}s</p>
                         `;
 

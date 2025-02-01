@@ -1,6 +1,6 @@
 <?php
 // Load the XML file
-$xmlFile = __DIR__ . '/data/auction.xml';
+$xmlFile = '/home/students/accounts/s104096281/cos80021/www/data/auction.xml';
 $xml = simplexml_load_file($xmlFile);
 
 // Get the item number to delete from the query string

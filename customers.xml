@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<customers>
+    <customer>
+        <customerID>6533ca86da312</customerID>
+        <first_name>leon</first_name>
+        <surname>leon</surname>
+        <email>leon@gmail.com</email>
+        <password>123</password>
+    </customer>
+    <customer>
+        <customerID>6533d0df875e6</customerID>
+        <first_name>Burak</first_name>
+        <surname>Galatasaray</surname>
+        <email>burakguleess@gmail.com</email>
+        <password>12345</password>
+    </customer>
+    <customer>
+        <customerID>6533d1126afdb</customerID>
+        <first_name>Akhmadjon</first_name>
+        <surname>Khamidov</surname>
+        <email>ahmadjon0120@outlook.com</email>
+        <password>123</password>
+    </customer>
+</customers>
