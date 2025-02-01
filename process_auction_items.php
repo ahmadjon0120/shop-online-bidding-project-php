@@ -1,13 +1,13 @@
 <?php
 // Load the XML file
-$xmlFile = '/home/students/accounts/s104096281/cos80021/www/data/auction.xml';
+$xmlFile = __DIR__ . '/data/auction.xml';
 $xml = simplexml_load_file($xmlFile);
 
 $items = $xml->xpath("//item[status='in_progress']");
 
 foreach ($items as $item) {
 
-    date_default_timezone_set("Asia/Karachi");
+    date_default_timezone_set("Australia/Melbourne");
     $currentTimestamp = strtotime("now");
     $startTimestamp = strtotime($item->startDate . ' ' . $item->startTime);
     $duration = intval($item->duration);

@@ -1,7 +1,7 @@
 <?php
 session_start();
 // Load the XML file
-$xmlFile = '/home/students/accounts/s104096281/cos80021/www/data/auction.xml';
+$xmlFile = __DIR__ . '/data/auction.xml';
 $xml = simplexml_load_file($xmlFile);
 
 // Get the POST data

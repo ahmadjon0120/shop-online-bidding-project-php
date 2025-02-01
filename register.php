@@ -20,6 +20,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Passwords do not match.";
     }
 
+    // Define the directory path dynamically based on the current script location
+    $directoryPath = __DIR__ . "/data/customers.xml";
+
     // Check if the email address is unique (you would typically check your database)
 
     // If there are no errors, proceed with registration
@@ -28,16 +31,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $customerID = uniqid();
 
         // Check if the XML file exists
-        if (!file_exists("/home/students/accounts/s104096281/cos80021/www/data/customers.xml")) {
+        if (!file_exists($directoryPath)) {
             // If the file doesn't exist, create it with the initial structure
             $xml = new SimpleXMLElement("<customers></customers>");
         } else {
             // If the file exists, load it
-            $xml = simplexml_load_file("/home/students/accounts/s104096281/cos80021/www/data/customers.xml");
+            $xml = simplexml_load_file($directoryPath);
         }
 
-         // Check if the email is already used
-         foreach ($xml->customer as $customer) {
+        // Check if the email is already used
+        foreach ($xml->customer as $customer) {
             if ($customer->email == $email) {
                 echo "Email address already in use. Please choose another.";
                 exit; // Exit the script
@@ -50,11 +53,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $customer->addChild("first_name", $first_name);
         $customer->addChild("surname", $surname);
         $customer->addChild("email", $email);
-        $customer->addChild("password", $password); 
+        $customer->addChild("password", $password);
 
         // Save the XML file
-        $xml->asXML("/home/students/accounts/s104096281/cos80021/www/data/customers.xml");
-
+        $xml->asXML($directoryPath);
 
         // Send a welcome email
         $to = $email;
@@ -68,7 +70,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo "Registration successful, but there was an issue sending the welcome email.";
         }
-
     } else {
         // Display error messages
         foreach ($errors as $error) {
@@ -78,4 +79,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 } else {
     echo "Invalid request!";
 }
-?>
