@@ -2,6 +2,10 @@ Purpose of Project
 
 The purpose of this project is to develop a web-based auction system, ShopOnline, where sellers can list items for sale and buyers can place bids on those items using the English Auction strategy. This system implements Ajax technologies, including JavaScript, HTML, DOM, XML, XMLHttpRequest, and XPath/XSLT, with PHP for backend processing. The system supports core functionalities such as user registration, login, item listing, bidding, and auction maintenance.
 
+![Home](https://github.com/user-attachments/assets/76efaa6b-88ec-4b5a-93ad-51aedab90ce4)
+![Listing](https://github.com/user-attachments/assets/a775e0c0-55c8-46c9-9d19-983db65ba4b2)
+![Bidding](https://github.com/user-attachments/assets/e671caa9-936c-4894-b36d-9aed64b69e3d)
+
 Version or Date
 
 Final Version on 21/10/2023
